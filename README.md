@@ -1,6 +1,6 @@
 ChIP-nexus Processing Pipeline
 ================
-Melanie Weilert
+Melanie Weilert and Jeff Johnston
 November 12, 2018
 
 

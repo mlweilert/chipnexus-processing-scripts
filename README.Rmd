@@ -1,6 +1,6 @@
 ---
 title: "ChIP-nexus Processing Pipeline"
-author: "Melanie Weilert"
+author: "Melanie Weilert and Jeff Johnston"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   rmarkdown::github_document:
