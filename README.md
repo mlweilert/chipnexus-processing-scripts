@@ -1,7 +1,7 @@
 ChIP-nexus Processing Pipeline
 ================
 Melanie Weilert and Jeff Johnston
-November 12, 2018
+November 21, 2018
 
 
 
@@ -206,9 +206,15 @@ Step 1: Preprocessing FASTQ reads (optional, but recommended)
 
 Given a sequencing file of ChIP-nexus reads, this step removes reads that don't have the proper fixed barcode, moves the random barcode sequences to the FASTQ read name, and removes both the fixed and random barcodes from the reads. Note that this step is highly recommended, but optional.
 
-Inputs: -f, --file: Path of ChIP-nexus FASTQ file to process \[required\] -o, --output: Output FASTQ file (gzip compressed) \[required\]
+Inputs: -f, --file: Path of ChIP-nexus FASTQ file to process \[required\]
+-o, --output: Output FASTQ file (gzip compressed) \[required\]
 
--t, --trim: Pre-trim all reads to this length before processing \[default=0\] -k, --keep: Minimum number of bases required after barcode to keep read \[default=18\] -b, --barcode: Barcode sequences (comma-separated) that follow random barcode") \[default="CTGA"\] -r, --randombarcode: Number of bases at the start of each read used for random barcode \[default=5\] -c, --chunksize: Number of reads to process at once (in thousands) \[default=1000\] -p, --processors: Number of simultaneous processing cores to utilize \[default=2\]
+-t, --trim: Pre-trim all reads to this length before processing \[default=0\]
+-k, --keep: Minimum number of bases required after barcode to keep read \[default=18\]
+-b, --barcode: Barcode sequences (comma-separated) that follow random barcode") \[default="CTGA"\]
+-r, --randombarcode: Number of bases at the start of each read used for random barcode \[default=5\]
+-c, --chunksize: Number of reads to process at once (in thousands) \[default=1000\]
+-p, --processors: Number of simultaneous processing cores to utilize \[default=2\]
 
 Outputs: gzip-compressed FASTQ file with filtered reads
 
