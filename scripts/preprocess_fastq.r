@@ -7,7 +7,7 @@ option_list <- list(
   make_option(c("-t", "--trim"),
               type="integer",
               default=0,
-              help="Pre-trim all reads to this length before processing"),
+              help="Pre-trim all reads to by length before processing"),
   make_option(c("-k", "--keep"),
               type="integer",
               default=18,
