@@ -1,7 +1,7 @@
 ChIP-nexus Processing Pipeline
 ================
 Melanie Weilert and Jeff Johnston
-November 21, 2018
+November 26, 2018
 
 
 
@@ -202,7 +202,10 @@ packages %>% pander(caption="Installation status of required packages")
 </table>
 
 Step 1: Preprocessing FASTQ reads (optional, but recommended)
--------------------------------------------------------------
+=============================================================
+
+R-Based Approach
+----------------
 
 Given a sequencing file of ChIP-nexus reads, this step removes reads that don't have the proper fixed barcode, moves the random barcode sequences to the FASTQ read name, and removes both the fixed and random barcodes from the reads. Note that this step is highly recommended, but optional.
 
@@ -226,10 +229,21 @@ Rscript scripts/preprocess_fastq.r -f chipnexus_sample.fastq.gz \
                            -o chipnexus_sample_processed.fastq.gz
 ```
 
+nimnexus trim using Nim (C, C++, JavaScript executable approach)
+----------------------------------------------------------------
+
+Scripts compiled using Nim (developed by Brent Pedersen, <https://github.com/brentp/bpbio>) and developed by Ziga Avsec are also available and recommended for use in this preprocessing step, especially if R is not currently installed on your server or package incompatibilities arise.
+
+Note that while actual run time is similar between the R-based and Nim-based approaches, this script may be highly parallelized because computational requirements are low per worker.
+
+The Github repository can be found here: <https://github.com/Avsecz/nimnexus> in addition to installation instructions.
+
 Step 2: Alignment
 -----------------
 
 This step aligns the processed FASTQ file to the genome using bowtie and cutadapt with the appropriate indexing. Manual command line entry or use of a premade script (scripts/align\_chipnexus.sh) can be used.
+
+Note: Multiple barcodes are used in the cutadapt command in order to account for to the possibility of adapter degradation.
 
 ### Example Use Case:
 
@@ -265,6 +279,13 @@ Inputs: -f, --file: Path of BAM file to process \[required\] -o, --output: Outpu
 ``` bash
 Rscript process_bam.r -f chipnexus_sample.bam -n chipnexus_sample
 ```
+
+nimnexus dedup using Nim (C, C++, JavaScript executable approach)
+-----------------------------------------------------------------
+
+Scripts compiled using Nim (developed by Brent Pedersen, <https://github.com/brentp/bpbio>) and developed by Ziga Avsec are also available for use in this deduplication step, especially if R is not currently installed on your server or package incompatibilities arise.
+
+The Github repository can be found here: <https://github.com/Avsecz/nimnexus> in addition to installation instructions.
 
 Step 4: Generate individual strand BigWigs
 ------------------------------------------
