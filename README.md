@@ -1,7 +1,7 @@
 ChIP-nexus Processing Pipeline
 ================
 Melanie Weilert and Jeff Johnston
-November 26, 2018
+November 27, 2018
 
 
 
@@ -204,10 +204,14 @@ packages %>% pander(caption="Installation status of required packages")
 Step 1: Preprocessing FASTQ reads (optional, but recommended)
 =============================================================
 
-R-Based Approach
-----------------
-
 Given a sequencing file of ChIP-nexus reads, this step removes reads that don't have the proper fixed barcode, moves the random barcode sequences to the FASTQ read name, and removes both the fixed and random barcodes from the reads. Note that this step is highly recommended, but optional.
+
+Additionally, it is recommended that ChIP-nexus FASTQ reads are sequenced single-end due to the imbalance between additional information gained and cost/time constraints by seuqencing paired end. However, if you wish to preprocess and align ChIP-nexus FASTQ files that are paired end, please follow the relevant chunks of instructions below:
+
+1.1. R-Based Approach
+---------------------
+
+### 1.1.1. Single-end Sequencing/Alignment
 
 Inputs: -f, --file: Path of ChIP-nexus FASTQ file to process \[required\]
 -o, --output: Output FASTQ file (gzip compressed) \[required\]
@@ -229,14 +233,37 @@ Rscript scripts/preprocess_fastq.r -f chipnexus_sample.fastq.gz \
                            -o chipnexus_sample_processed.fastq.gz
 ```
 
-nimnexus trim using Nim (C, C++, JavaScript executable approach)
-----------------------------------------------------------------
+### 1.1.2. Single-end Sequencing/Alignment
+
+Inputs: -f, --first: Path of forward strand ChIP-nexus FASTQ file to process \[required\]
+-s, --second: Path of reverse strand ChIP-nexus FASTQ file to process \[required\]
+-o, --output: Output FASTQ file (gzip compressed) \[required\]
+
+-t, --trim: Pre-trim all reads to this length before processing \[default=0\]
+-k, --keep: Minimum number of bases required after barcode to keep read \[default=18\]
+-b, --barcode: Barcode sequences (comma-separated) that follow random barcode") \[default="CTGA"\]
+-r, --randombarcode: Number of bases at the start of each read used for random barcode \[default=5\]
+-c, --chunksize: Number of reads to process at once (in thousands) \[default=1000\]
+-p, --processors: Number of simultaneous processing cores to utilize \[default=2\]
+
+Outputs: gzip-compressed FASTQ file with filtered reads
+
+### Example Use Case:
+
+``` bash
+Rscript scripts/preprocess_paired_fastq.r -f chipnexus_sample_read1.fastq.gz -s chipnexus_sample_read2.fastq.gz \
+                           -k 22 -b CTGA -r 5 -p 4 -c 1000 \
+                           -o chipnexus_sample_processed.fastq.gz
+```
+
+1.3. Nim-Based Approach: nimnexus trim (C, C++, JavaScript executable)
+----------------------------------------------------------------------
 
 Scripts compiled using Nim (developed by Brent Pedersen, <https://github.com/brentp/bpbio>) and developed by Ziga Avsec are also available and recommended for use in this preprocessing step, especially if R is not currently installed on your server or package incompatibilities arise.
 
 Note that while actual run time is similar between the R-based and Nim-based approaches, this script may be highly parallelized because computational requirements are low per worker.
 
-The Github repository can be found here: <https://github.com/Avsecz/nimnexus> in addition to installation instructions.
+The Github repository can be found here: <https://github.com/Avsecz/nimnexus> in addition to installation instructions. As of 11/27/2018, this approach can only work with single-end sequencing results.
 
 Step 2: Alignment
 -----------------
@@ -261,7 +288,7 @@ bowtie -S -p 4 --chunkmbs 512 -k 1 -m 1 -v 2 --best --strata \
 scripts/align_chipnexus.sh chipnexus_sample_processed.fastq.gz bowtie_indexes/dm6
 ```
 
-### Optional: Sort your BAM file for reduced storage and quicker processing downstream.
+### 2.1. Optional: Sort your BAM file for reduced storage and quicker processing downstream.
 
 ``` bash
 samtools sort chipnexus_sample.bam
@@ -269,6 +296,9 @@ samtools sort chipnexus_sample.bam
 
 Step 3: Process BAM
 -------------------
+
+3.1. R-Based Approach
+---------------------
 
 This step removes reads that align to the same genomic position and have identical random barcodes, resizes the reads to a width of 1 (the first base sequenced), and saves the results as a GRanges object.
 
@@ -280,8 +310,8 @@ Inputs: -f, --file: Path of BAM file to process \[required\] -o, --output: Outpu
 Rscript process_bam.r -f chipnexus_sample.bam -n chipnexus_sample
 ```
 
-nimnexus dedup using Nim (C, C++, JavaScript executable approach)
------------------------------------------------------------------
+3.2. Nim-Based Approach: nimnexus dedup (C, C++, JavaScript executable)
+-----------------------------------------------------------------------
 
 Scripts compiled using Nim (developed by Brent Pedersen, <https://github.com/brentp/bpbio>) and developed by Ziga Avsec are also available for use in this deduplication step, especially if R is not currently installed on your server or package incompatibilities arise.
 
