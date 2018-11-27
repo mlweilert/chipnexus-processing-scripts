@@ -256,7 +256,7 @@ Rscript scripts/preprocess_paired_fastq.r -f chipnexus_sample_read1.fastq.gz -s 
                            -o chipnexus_sample_processed.fastq.gz
 ```
 
-1.3. Nim-Based Approach: nimnexus trim (C, C++, JavaScript executable)
+1.2. Nim-Based Approach: nimnexus trim (C, C++, JavaScript executable)
 ----------------------------------------------------------------------
 
 Scripts compiled using Nim (developed by Brent Pedersen, <https://github.com/brentp/bpbio>) and developed by Ziga Avsec are also available and recommended for use in this preprocessing step, especially if R is not currently installed on your server or package incompatibilities arise.
