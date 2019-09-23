@@ -71,8 +71,8 @@ process_chunk <- function(chunk_list, opt) {
   names(bc_matches) <- barcodes
 
   for(barcode in barcodes) {
-    matches <- elementNROWS(vmatchPattern(barcode, barcode_reads, fixed=FALSE)) == 1
-    n_count <- elementNROWS(vmatchPattern("N", barcode_reads, fixed=TRUE))
+    matches <- elementNROWS(vmatchPattern(barcode, barcode_reads, fixed=FALSE)) == 1 #idx which match the barcodes
+    n_count <- elementNROWS(vmatchPattern("N", barcode_reads, fixed=TRUE)) #count N's in the barcode
     bc_matches[[barcode]] <- which(matches == TRUE & n_count <= 1)
   }
 
@@ -102,7 +102,7 @@ process_chunk <- function(chunk_list, opt) {
 
       #message("read_ids: ", paste0(head(matched_read_ids), collapse=", "))
 
-      # Keep random barcode
+      # Keep random barcode and assign in fastq name
       random_bc  <- substr(sread(fq1.matched), 1, opt$randombarcode)
 
       fq1.matched <- narrow(fq1.matched, start=barcode_end + 1, width=width(fq1.matched) - (barcode_end + 1))

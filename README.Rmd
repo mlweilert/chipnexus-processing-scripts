@@ -19,7 +19,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-#Introduction
+# Introduction
 
 The purpose of this script is to provide a readable workflow for processing ChIP-nexus data (http://www.nature.com/nbt/journal/v33/n4/full/nbt.3121.html). ChIP‐nexus (Chromatin‐Immunoprecipitation with nucleotide resolution using exonuclease digestion, unique barcode and single ligation) is a ChIP‐exo protocol that makes use of a unique barcode to identify duplicate reads and a novel library preparation strategy that is adopted from iCLIP.
 
@@ -27,7 +27,7 @@ Other alignment tools can be used at the discretion of the investigator, but the
 
 Detailed information on ChIP-nexus experimental protocols can be found at: http://research.stowers.org/zeitlingerlab/protocols.html
 
-#Computational Setup
+# Computational Setup
 
 The following Unix and R tools need to be set up as follows:
 
@@ -109,20 +109,40 @@ packages <- data_frame(Package = cran_packages, Source = "CRAN") %>%
 packages %>% pander(caption="Installation status of required packages")
 ```
 
-#Step 1: Preprocessing FASTQ reads (optional, but recommended)
+
+# Running the ChIP-nexus pipeline
+
+# Option 1: Run using Snakemake [recommended]
+
+In order to provide a reproducible and easy-to-read workflow for anyone looking at your processing steps, we highly recommend using Snakemake to run your pipeline. More details on this tools can be used here: https://snakemake.readthedocs.io/en/stable/. The tutorial they use is an aligner for genomes, so it will be useful to look over.
+
+1. **Install** Snakemake on your machine: `pip install snakemake`
+2. **Organize** your files to be the same format as this GitHub repo. 
++ `data/fastq/{factor}_nexus_{replicate}.fastq` files are present
++ `bowtie_indexes/{genome_prefix}` files are present
++ `scripts/*` files are present
+3. **Edit** the `Snakefile` in a text editor (lines 37-41) so that the pipeline workflow knows what samples to process.
+4. In your directory that contains the `Snakefile`, type `snakemake -np` to simulate what will be run in this pipeline.
+5. If (4) returns no errors, then type `snakemake` and watch your pipeline run for each sample/replicate combination!
+
+Please look at the `data/fastq/sample_nexus_1.fastq` example that the `Snakefile` shows for a basic example.
+
+# Option 2: Run each script manuscript through each sample [not recommended]
+
+## Step 1: Preprocessing FASTQ reads 
 
 Given a sequencing file of ChIP-nexus reads, this step removes reads that don't have the proper fixed barcode, moves the random barcode sequences to the FASTQ read name, and removes both the fixed and random barcodes from the reads. Note that this step is highly recommended, but optional. 
 
 Additionally, it is recommended that ChIP-nexus FASTQ reads are sequenced single-end due to the imbalance between additional information gained and cost/time constraints by seuqencing paired end. However, if you wish to preprocess and align ChIP-nexus FASTQ files that are paired end, please follow the relevant chunks of instructions below:
 
-##1.1. R-Based Approach
+### 1.1. R-Based Approach
 
-###1.1.1. Single-end Sequencing/Alignment
+#### 1.1.1. Single-end Sequencing/Alignment
 
 Inputs:
+
 -f, --file: Path of ChIP-nexus FASTQ file to process [required]  
 -o, --output: Output FASTQ file (gzip compressed) [required]          
-
 -t, --trim: Pre-trim all reads to this length before processing [default=0]      
 -k, --keep: Minimum number of bases required after barcode to keep read [default=18]      
 -b, --barcode: Barcode sequences (comma-separated) that follow random barcode") [default="CTGA"]      
@@ -132,7 +152,7 @@ Inputs:
 
 Outputs: gzip-compressed FASTQ file with filtered reads
 
-###Example Use Case:
+Example Use Case:
 
 ```{bash, eval=F}
 Rscript scripts/preprocess_fastq.r -f chipnexus_sample.fastq.gz \
@@ -140,13 +160,12 @@ Rscript scripts/preprocess_fastq.r -f chipnexus_sample.fastq.gz \
                            -o chipnexus_sample_processed.fastq.gz
 ```
 
-###1.1.2. Single-end Sequencing/Alignment
+#### 1.1.2. Single-end Sequencing/Alignment
 
-Inputs:
+Inputs
 -f, --first: Path of forward strand ChIP-nexus FASTQ file to process [required]     
 -s, --second: Path of reverse strand ChIP-nexus FASTQ file to process [required]     
 -o, --output: Output FASTQ file (gzip compressed) [required]    
-
 -t, --trim: Pre-trim all reads to this length before processing [default=0]     
 -k, --keep: Minimum number of bases required after barcode to keep read [default=18]       
 -b, --barcode: Barcode sequences (comma-separated) that follow random barcode") [default="CTGA"]       
@@ -156,7 +175,7 @@ Inputs:
 
 Outputs: gzip-compressed FASTQ file with filtered reads
 
-###Example Use Case:
+Example Use Case:
 
 ```{bash, eval=F}
 Rscript scripts/preprocess_paired_fastq.r -f chipnexus_sample_read1.fastq.gz -s chipnexus_sample_read2.fastq.gz \
@@ -164,7 +183,7 @@ Rscript scripts/preprocess_paired_fastq.r -f chipnexus_sample_read1.fastq.gz -s 
                            -o chipnexus_sample_processed.fastq.gz
 ```
 
-##1.2. Nim-Based Approach: nimnexus trim (C, C++, JavaScript executable)
+### 1.2. Nim-Based Approach: nimnexus trim (C, C++, JavaScript executable)
 
 Scripts compiled using Nim (developed by Brent Pedersen, https://github.com/brentp/bpbio) and developed by Ziga Avsec are also available and recommended for use in this preprocessing step, especially if R is not currently installed on your server or package incompatibilities arise. 
 
@@ -172,13 +191,13 @@ Note that while actual run time is similar between the R-based and Nim-based app
 
 The Github repository can be found here: https://github.com/Avsecz/nimnexus in addition to installation instructions. As of 11/27/2018, this approach can only work with single-end sequencing results.
 
-##Step 2: Alignment
+## Step 2: Alignment
 
 This step aligns the processed FASTQ file to the genome using bowtie and cutadapt with the appropriate indexing. Manual command line entry or use of a premade script (scripts/align_chipnexus.sh) can be used.
 
 Note: Multiple barcodes are used in the cutadapt command in order to account for to the possibility of adapter degradation.
 
-###Example Use Case:
+### Example Use Case:
 
 ```{bash, eval=F}
 #Manual command line
@@ -194,45 +213,47 @@ bowtie -S -p 4 --chunkmbs 512 -k 1 -m 1 -v 2 --best --strata \
 scripts/align_chipnexus.sh chipnexus_sample_processed.fastq.gz bowtie_indexes/dm6
 ```
 
-###2.1. Optional: Sort your BAM file for reduced storage and quicker processing downstream.
+### 2.1. Optional: Sort your BAM file for reduced storage and quicker processing downstream.
 
 ```{bash, eval=F}
 samtools sort chipnexus_sample.bam
 ```
 
-##Step 3: Process BAM
+## Step 3: Process BAM
 
-##3.1. R-Based Approach
+### 3.1. R-Based Approach
 
 This step removes reads that align to the same genomic position and have identical random barcodes, resizes the reads to a width of 1 (the first base sequenced), and saves the results as a GRanges object.
 
 Inputs:
+
 -f, --file: Path of BAM file to process [required]
 -o, --output: Output FASTQ file (gzip compressed) [required]
 -p, --paired: Call option if the alignment was conducted in paired-end mode [default=FALSE]
 
-###Example Use Case:
+#### Example Use Case:
 
 ``` {bash, eval=F}
 Rscript process_bam.r -f chipnexus_sample.bam -n chipnexus_sample
 ```
 
-##3.2. Nim-Based Approach: nimnexus dedup (C, C++, JavaScript executable)
+### 3.2. Nim-Based Approach: nimnexus dedup (C, C++, JavaScript executable)
 
 Scripts compiled using Nim (developed by Brent Pedersen, https://github.com/brentp/bpbio) and developed by Ziga Avsec are also available for use in this deduplication step, especially if R is not currently installed on your server or package incompatibilities arise. 
 
 The Github repository can be found here: https://github.com/Avsecz/nimnexus in addition to installation instructions.
 
-##Step 4: Generate individual strand BigWigs
+## Step 4: Generate individual strand BigWigs
 
 This step generates a positive and negative strand BigWig file from the supplied GRanges object.
 
 Inputs:
+
 -f, --file: Path of GRanges file to process [required]
 -n, --name: Output prefix for BW file [required]
 -m, --normalization: Call option if the output BW file should be normalized to RPM [default=FALSE]
 
-###Example Use Case
+### Example Use Case
 
 ``` {bash, eval=F}
 Rscript split_granges_by_strand.r -r chipnexus_sample.granges.rds
