@@ -14,13 +14,22 @@ option_list <- list(
   make_option(c("-p", "--paired"),
               action="store_true",
               default=FALSE,
-              help="Paired-end mode"))
+              help="Paired-end mode"),
+  make_option(c("-u", "--unique"),
+ 		type="logical",
+		default=TRUE,
+		help="remove duplicates based on random barcode"),
+  make_option(c("-o", "--output_filtered"),
+              type="logical",
+              default=F,
+              help="logical indicating whether to output a _filtered.bam in addition to unfiltered"))
 
 opt <- parse_args(OptionParser(option_list=option_list))
 
 suppressPackageStartupMessages(library(Rsamtools))
 suppressPackageStartupMessages(library(GenomicAlignments))
 suppressPackageStartupMessages(library(magrittr))
+suppressPackageStartupMessages(library(rtracklayer))
 
 id <- paste0("[", opt$name, "] ")
 
@@ -40,10 +49,19 @@ if(opt$paired) {
 
 message(id, pn(length(bam.gr)), " fragments")
 
-message(id, "Removing barcode duplicates...")
-bam_uniq.gr <- GenomicRanges::split(bam.gr, bam.gr$barcode) %>%
-               unique %>%
-               unlist(use.names=FALSE)
+if(opt$unique){
+	message(id, "Removing barcode duplicates...")
+	bam_uniq.gr <- GenomicRanges::split(bam.gr, bam.gr$barcode) %>%
+	               unique %>%
+	               unlist(use.names=FALSE)
+}else{
+	bam_uniq.gr <- bam.gr
+}
+
 
 message(id, "Saving ", pn(length(bam_uniq.gr)), " fragments...")
 saveRDS(bam_uniq.gr, file=paste(opt$name, ".granges.rds", sep=""))
+
+if(opt$output_filtered==T){
+  export(bam_uniq.gr, paste(opt$name, ".bam",sep=""), format = "bam")
+}

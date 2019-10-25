@@ -1,0 +1,43 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	bam_to_granges
+	1	bw_normalize
+	1	fastq_align
+	1	fastq_preprocess_single_end
+	1	fastq_trim_adapters
+	1	granges_to_bw
+	1	run_nexus_macs2_individual
+	8
+
+[Fri Oct 25 09:26:37 2019]
+Job 7: Preprocessing single end ChIP-nexus sample...
+
+[Fri Oct 25 09:27:01 2019]
+Finished job 7.
+1 of 8 steps (12%) done
+
+[Fri Oct 25 09:27:01 2019]
+Job 6: Preprocessing single end ChIP-nexus sample...
+
+[Fri Oct 25 09:27:02 2019]
+Finished job 6.
+2 of 8 steps (25%) done
+
+[Fri Oct 25 09:27:02 2019]
+Job 5: Aligning ChIP-nexus sample...
+
+[Fri Oct 25 09:27:22 2019]
+Finished job 5.
+3 of 8 steps (38%) done
+
+[Fri Oct 25 09:27:22 2019]
+Job 4: Converting BAM to GRanges...
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /n/projects/mw2098/shared_code/pipeline/github/chipnexus-processing-workflow/.snakemake/log/2019-10-25T092637.554037.snakemake.log

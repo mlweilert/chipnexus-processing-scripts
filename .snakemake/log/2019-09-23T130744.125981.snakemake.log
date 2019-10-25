@@ -1,0 +1,58 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	bam_deduplicate
+	1	bam_to_granges
+	1	bw_normalize
+	1	fastq_align
+	1	fastq_preprocess_single_end
+	1	fastq_trim_adapters
+	1	granges_to_bw
+	8
+
+[Mon Sep 23 13:07:44 2019]
+Job 7: Preprocessing single end ChIP-nexus sample...
+
+[Mon Sep 23 13:08:04 2019]
+Finished job 7.
+1 of 8 steps (12%) done
+
+[Mon Sep 23 13:08:04 2019]
+Job 6: Preprocessing single end ChIP-nexus sample...
+
+[Mon Sep 23 13:08:04 2019]
+Finished job 6.
+2 of 8 steps (25%) done
+
+[Mon Sep 23 13:08:04 2019]
+Job 5: Aligning ChIP-nexus sample...
+
+[Mon Sep 23 13:08:07 2019]
+Finished job 5.
+3 of 8 steps (38%) done
+
+[Mon Sep 23 13:08:07 2019]
+Job 4: Deduplicating BAM files...
+
+[Mon Sep 23 13:08:24 2019]
+Finished job 4.
+4 of 8 steps (50%) done
+
+[Mon Sep 23 13:08:24 2019]
+Job 3: Converting BAM to GRanges...
+
+[Mon Sep 23 13:08:24 2019]
+Error in rule bam_to_granges:
+    jobid: 3
+    output: data/rdata/sample_nexus_1_filtered.granges.rds
+    shell:
+        Rscript scripts/process_bam.r -f data/bam/sample_nexus_1_filtered.bam -n rdata/sample_nexus_1_filtered -u FALSE
+        (exited with non-zero exit code)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /n/projects/mw2098/shared_code/pipeline/nexus/github/chipnexus-processing-workflow/.snakemake/log/2019-09-23T130744.125981.snakemake.log

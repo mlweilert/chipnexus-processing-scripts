@@ -1,0 +1,4 @@
+Building DAG of jobs...
+MissingInputException in line 81 of /n/projects/mw2098/shared_code/pipeline/github/chipnexus-processing-workflow/Snakefile:
+Missing input files for rule fastq_preprocess_single_end:
+fastq/raw/sample_nexus_2.fastq.gz

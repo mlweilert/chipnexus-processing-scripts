@@ -1,0 +1,42 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	bam_to_granges
+	1	bw_normalize
+	1	granges_to_bw
+	4
+
+[Mon Sep 23 13:09:44 2019]
+Job 3: Converting BAM to GRanges...
+
+[Mon Sep 23 13:10:01 2019]
+Finished job 3.
+1 of 4 steps (25%) done
+
+[Mon Sep 23 13:10:01 2019]
+Job 1: Converting GRanges to bw...
+
+[Mon Sep 23 13:10:27 2019]
+Finished job 1.
+2 of 4 steps (50%) done
+
+[Mon Sep 23 13:10:27 2019]
+Job 2: Normalizing ChIP-nexus data...
+
+[Mon Sep 23 13:11:08 2019]
+Finished job 2.
+3 of 4 steps (75%) done
+
+[Mon Sep 23 13:11:08 2019]
+localrule all:
+    input: data/bw/sample_nexus_1_filtered_positive.bw, data/bw/sample_nexus_1_filtered_normalized_positive.bw
+    jobid: 0
+
+[Mon Sep 23 13:11:08 2019]
+Finished job 0.
+4 of 4 steps (100%) done
+Complete log: /n/projects/mw2098/shared_code/pipeline/nexus/github/chipnexus-processing-workflow/.snakemake/log/2019-09-23T130944.502422.snakemake.log

@@ -1,0 +1,18 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	bam_to_granges
+	1	bw_normalize
+	1	granges_to_bw
+	1	run_nexus_macs2_individual
+	5
+
+[Fri Oct 25 09:33:02 2019]
+Job 4: Converting BAM to GRanges...
+
+Terminating processes on user request, this might take some time.
+Complete log: /n/projects/mw2098/shared_code/pipeline/github/chipnexus-processing-workflow/.snakemake/log/2019-10-25T093301.858887.snakemake.log

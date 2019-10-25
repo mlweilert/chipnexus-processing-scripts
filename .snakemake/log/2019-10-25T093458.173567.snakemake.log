@@ -1,0 +1,50 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	1	bam_to_granges
+	1	bw_normalize
+	1	granges_to_bw
+	1	run_nexus_macs2_individual
+	5
+
+[Fri Oct 25 09:34:58 2019]
+Job 4: Converting BAM to GRanges...
+
+[Fri Oct 25 09:35:18 2019]
+Finished job 4.
+1 of 5 steps (20%) done
+
+[Fri Oct 25 09:35:18 2019]
+Job 3: Running MACS2 on individual BAM files...
+
+[Fri Oct 25 09:35:20 2019]
+Finished job 3.
+2 of 5 steps (40%) done
+
+[Fri Oct 25 09:35:20 2019]
+Job 1: Converting GRanges to bw...
+
+[Fri Oct 25 09:35:38 2019]
+Finished job 1.
+3 of 5 steps (60%) done
+
+[Fri Oct 25 09:35:38 2019]
+Job 2: Normalizing ChIP-nexus data...
+
+[Fri Oct 25 09:35:56 2019]
+Finished job 2.
+4 of 5 steps (80%) done
+
+[Fri Oct 25 09:35:56 2019]
+localrule all:
+    input: bw/sample_nexus_1_filtered_positive.bw, bw/sample_nexus_1_filtered_normalized_positive.bw, macs2/sample_nexus_1_peaks.narrowPeak
+    jobid: 0
+
+[Fri Oct 25 09:35:56 2019]
+Finished job 0.
+5 of 5 steps (100%) done
+Complete log: /n/projects/mw2098/shared_code/pipeline/github/chipnexus-processing-workflow/.snakemake/log/2019-10-25T093458.173567.snakemake.log
