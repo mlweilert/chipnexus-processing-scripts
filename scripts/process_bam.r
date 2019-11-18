@@ -63,5 +63,11 @@ message(id, "Saving ", pn(length(bam_uniq.gr)), " fragments...")
 saveRDS(bam_uniq.gr, file=paste(opt$name, ".granges.rds", sep=""))
 
 if(opt$output_filtered==T){
-  export(bam_uniq.gr, paste(opt$name, ".bam",sep=""), format = "bam")
+  bam_name <-paste(opt$name, "_filtered.bam",sep="")
+  temp_bam_name <-paste(opt$name, "_filtered_temp.bam",sep="")
+  
+  export(bam_uniq.gr, temp_bam_name)
+
+  file.rename(from = temp_bam_name, to = bam_name) #rename once writing is done to prevent snakemake errors mid-saving the file
+  file.rename(from = paste0(temp_bam_name, ".bai"), to = paste0(bam_name, ".bai")) #rename automatically generated .bai file as well
 }

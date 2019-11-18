@@ -51,5 +51,7 @@ if(opt$discard != "") {
 }
 
 message("Saving ", pn(length(bam_uniq.gr)), " reads...")
-export(bam_uniq.gr, opt$output)
-
+temp_output_name<-gsub(pattern = ".bam", replacement = "_temp.bam", x = opt$output) #create temporary name for writing
+export(bam_uniq.gr, temp_output_name) #write to temp name
+file.rename(from = temp_output_name, to = opt$output) #rename once writing is done to prevent snakemake errors mid-saving the file
+file.rename(from = paste0(temp_output_name, ".bai"), to = paste0(opt$output, ".bai")) #rename automatically generated .bai file as well
