@@ -190,7 +190,7 @@ Please look at the `data/fastq/sample_nexus_1.fastq` example that the
 `Snakefile` shows for a basic
 example.
 
-# Option 2: Run each script manuscript through each sample \[not recommended\]
+# Option 2: Run each script manuscript through each sample 
 
 ## Step 1: Preprocessing FASTQ reads
 
